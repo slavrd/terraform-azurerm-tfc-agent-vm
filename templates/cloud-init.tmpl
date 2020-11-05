@@ -1,0 +1,21 @@
+#cloud-config
+packages:
+- azure-cli
+- jq
+- curl
+- unzip
+write_files:
+- content: |
+    set -e -o pipefail
+    if [ -z "$TFCA_VERSION" ]; then
+      export TFCA_VERSION=$(curl -sSf https://releases.hashicorp.com/tfc-agent/index.json | jq -r .versions[].version | grep -E '^v{0,1}[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
+    fi
+    TFC_AGENT_URL=$(curl -sSf https://releases.hashicorp.com/tfc-agent/index.json | jq -r --arg v "$TFCA_VERSION" '.versions[$v].builds[0].url')
+    curl -sSf -o /tmp/tfc-agent-archive.zip $TFC_AGENT_URL
+    [ -d /opt/tfc-agent ] || mkdir -p /opt/tfc-agent
+    unzip -o -d /opt/tfc-agent  /tmp/tfc-agent-archive.zip && rm -f /tmp/tfc-agent-archive.zip 
+  path: /opt/tfca-install/tfca-download.sh
+  owner: root:root
+  permissions: '755'
+runcmd:
+- ["/bin/bash", "-c", "TFCA_VERSION='${tfca_version}' /opt/tfca-install/tfca-download.sh"]
