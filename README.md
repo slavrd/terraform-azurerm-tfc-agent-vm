@@ -61,3 +61,9 @@ terraform output ssh_private_key > ssh.key
 chmod 600 ssh.key
 ssh -i ssh.key ubuntu@`terraform output vm_public_ip` 'sudo systemctl stop tfc-agent.service'
 ```
+
+Alternatively can use the Azure CLI to stop the VM
+
+```bash
+az vm stop --ids `terraform output vm_id`
+```
