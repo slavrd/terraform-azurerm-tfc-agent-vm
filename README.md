@@ -28,7 +28,7 @@ The Terraform configuration accepts the following Terraform Input variables:
 | common_tags | `map(string)` | `{}` |Common tags to assign to all resources. |
 | vnet_cidrs | `list(string)` | | List of CIDRs for the Azure virtual network address spaces. |
 | vnet_subnet_cidrs | `list(string)` | | List of CIDRs for subnets to be created. It's the user's responsibility to ensure that the subnets are calculated correctly. |
-| ssh_ingress_cidrs | `list(string)` | `"0.0.0.0/0"` | List of CIDRs from which incoming SSH connections are allowed. If the list is empty the '0.0.0.0/0' will be used. |
+| ssh_ingress_cidrs | `list(string)` | `["0.0.0.0/0"]` | List of CIDRs from which incoming SSH connections are allowed. If the list is empty the '0.0.0.0/0' will be used. |
 | vm_size | `string` | `"Standard_D2s_v4"` | The size of the virtual machine. |
 | vm_admin_username | `string` | `"ubuntu"` | The admin user created on the VM. |
 | vm_ssh_public_key | `string` | `""` |An SSH public key to install on the VM. If not provided a new SSH key pair will be generated and used. |
