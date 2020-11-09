@@ -8,7 +8,6 @@ variable "name_prefix" {
 variable "location" {
   type        = string
   description = "The Azure location in which to create the resources."
-  default     = ""
 }
 
 variable "common_tags" {
@@ -26,8 +25,7 @@ variable "vnet_cidrs" {
 
 variable "vnet_subnet_cidrs" {
   type        = list(string)
-  description = "List of CIDRs for subnets creation. It's meaningless to set this if vnet_address_space is not set also. It's the user's responsibility to ensure that the subnets are calculated correctly."
-  default     = []
+  description = "List of CIDRs for subnets creation. It's the user's responsibility to ensure that the subnets are calculated correctly."
 }
 
 variable "ssh_ingress_cidrs" {
@@ -63,7 +61,7 @@ variable "vm_source_image_reference" {
     sku       = string
     version   = string
   })
-  description = "Soure reference to the Azure VM image to use. Should be an Ubuntu OS image.If not provided an Ubuntu 20.04 image will be used."
+  description = "Source reference to the Azure VM image to use. Should be an Ubuntu OS image.If not provided an Ubuntu 20.04 image will be used."
   default = {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-focal"
@@ -74,7 +72,7 @@ variable "vm_source_image_reference" {
 
 variable "vm_assigned_role_name" {
   type        = string
-  description = "The name of the role deffinition to assign to the VM. If not provided no roles will be assigned. Assignment will be socped to the curernt subscription."
+  description = "The name of the role definition to assign to the VM. If not provided no roles will be assigned. Assignment will be scoped to the current subscription."
   default     = ""
 }
 
@@ -88,7 +86,7 @@ variable "tfca_version" {
 
 variable "tfca_service_enable" {
   type        = bool
-  description = "Whether to enble the Terraform Cloud Agent as service on the VM."
+  description = "Whether to enable the Terraform Cloud Agent as service on the VM."
   default     = false
 }
 
