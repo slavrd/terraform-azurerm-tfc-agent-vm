@@ -1,2 +1,58 @@
-# terraform-azrurerm-tfc-agent-vm
-A playground for the TFC Agents running on an Azure VM.
+# Terraform  Terraform Cloud Agent
+
+A Terraform configuration to bring up a playground for the TFC Agents running on an Azure VM.
+
+The configuration will create
+
+* Basic Azure network - a vnet and a subnet.
+* An Azure Public IP.
+* A Security Group  to limit SSH access to specific CIDRs.
+* A VM with the Terraform Cloud Agent binaries downloaded and set up as a systemd service.
+
+## Prerequisites
+
+* Terraform, version `>= 0.13`
+* `hashicorp/azurerm` provider, version `~> 2.30`
+* `hashicorp/tls` provider, version  `~> 3.0`
+
+## Input
+
+The Terraform configuration accepts the following Terraform Input variables:
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| name_prefix | `string` | `"tfca-"` | Prefix to use in the names of created resources. |
+| location | `string` | | The Azure location in which to create the resources. |
+| common_tags | `map(string)` | `{}` |Common tags to assign to all resources. |
+| vnet_cidrs | `list(string)` | | List of CIDRs for the Azure virtual network address spaces. |
+| vnet_subnet_cidrs | `list(string)` | | List of CIDRs for subnets to be created. It's the user's responsibility to ensure that the subnets are calculated correctly. |
+| ssh_ingress_cidrs | `list(string)` | `"0.0.0.0/0"` | List of CIDRs from which incoming SSH connections are allowed. If the list is empty the '0.0.0.0/0' will be used. |
+| vm_size | `string` | `"Standard_D2s_v4"` | The size of the virtual machine. |
+| vm_admin_username | `string` | `"ubuntu"` | The admin user created on the VM. |
+| vm_ssh_public_key | `string` | `""` |An SSH public key to install on the VM. If not provided a new SSH key pair will be generated and used. |
+| vm_source_image_reference | `object({ publisher=string, offer=string, sku=string, version=string })` | `{publisher="Canonical", offer="0001-com-ubuntu-server-focal", sku="20_04-lts", version="20.04.202010260" }` | Source reference to the Azure VM image to use. Should be an Ubuntu OS image.If not provided an Ubuntu 20.04 image will be used. |
+| vm_assigned_role_name | `string` | `""` | The name of the role definition to assign to the VM. If not provided no roles will be assigned. Assignment will be scoped to the current subscription. |
+| tfca_version | `string` | `""` | TFC Agent version to install. If not provided will use the latest one. |
+| tfca_service_enable | `bool` | `false` | Whether to enable the Terraform Cloud Agent as service on the VM. |
+| tfca_env_vars | `map(string)` | `{}` | A map of environment variables to set up in the Terraform Cloud agent systemd unit file. |
+
+## Output
+
+The Terraform configuration declares the following Terraform Outputs:
+
+| Output | Type | Description |
+|--------|------|-------------|
+| vm_public_ip | `string` | The public IP of VM. |
+| ssh_private_key | `string` | The private key to access the VM. Populated only if the key was created via Terraform. |
+
+## Notes
+
+When destroying the infrastructure the Azure VM will not be shut down gracefully. This leads to the Terraform Cloud Agent, running on the VM, going in `unknown` status in the Terraform Cloud Agent pool as it does not shut down gracefully as well. If you want to avoid that need to connect to the VM and shut down the Terraform Cloud Agent service. 
+
+For example if the TLS key pair was created via Terraform and the default VM admin username (`ubuntu`) was used
+
+```bash
+terraform output ssh_private_key > ssh.key
+chmod 600 ssh.key
+ssh -i ssh.key ubuntu@`terraform output vm_public_ip` 'sudo systemctl stop tfc-agent.service'
+```
