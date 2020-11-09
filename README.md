@@ -1,4 +1,4 @@
-# Terraform  Terraform Cloud Agent
+# Terraform Cloud Agents - Azure VM
 
 A Terraform configuration to bring up a playground for the [TFC Agents](https://www.terraform.io/docs/cloud/workspaces/agent.html) running on an Azure VM.
 
