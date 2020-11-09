@@ -1,13 +1,15 @@
 # Terraform  Terraform Cloud Agent
 
-A Terraform configuration to bring up a playground for the TFC Agents running on an Azure VM.
+A Terraform configuration to bring up a playground for the [TFC Agents](https://www.terraform.io/docs/cloud/workspaces/agent.html) running on an Azure VM.
 
 The configuration will create
 
-* Basic Azure network - a vnet and a subnet.
+* Basic Azure network - a vnet and subnets.
 * An Azure Public IP.
 * A Security Group  to limit SSH access to specific CIDRs.
 * A VM with the Terraform Cloud Agent binaries downloaded and set up as a systemd service.
+
+It is possible to assign a role to the VM so that the Terraform Cloud Agents can perform runs using the [Managed Identity authentication](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/managed_service_identity) for the Terraform AzureRM provider.
 
 ## Prerequisites
 
