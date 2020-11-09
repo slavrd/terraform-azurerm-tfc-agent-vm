@@ -46,6 +46,9 @@ The Terraform configuration declares the following Terraform Outputs:
 |--------|------|-------------|
 | vm_public_ip | `string` | The public IP of VM. |
 | ssh_private_key | `string` | The private key to access the VM. Populated only if the key was created via Terraform. |
+| rg_name | `string` | he Name of the resource group containing the VM. |
+| vm_name | `string` | The Name of the VM. |
+| vm_id | `string` | The Id of the VM. |
 
 ## Notes
 
@@ -57,4 +60,10 @@ For example if the TLS key pair was created via Terraform and the default VM adm
 terraform output ssh_private_key > ssh.key
 chmod 600 ssh.key
 ssh -i ssh.key ubuntu@`terraform output vm_public_ip` 'sudo systemctl stop tfc-agent.service'
+```
+
+Alternatively can use the Azure CLI to stop the VM
+
+```bash
+az vm stop --ids `terraform output vm_id`
 ```
