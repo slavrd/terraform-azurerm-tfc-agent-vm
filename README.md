@@ -46,6 +46,9 @@ The Terraform configuration declares the following Terraform Outputs:
 |--------|------|-------------|
 | vm_public_ip | `string` | The public IP of VM. |
 | ssh_private_key | `string` | The private key to access the VM. Populated only if the key was created via Terraform. |
+| rg_name | `string` | he Name of the resource group containing the VM. |
+| vm_name | `string` | The Name of the VM. |
+| vm_id | `string` | The Id of the VM. |
 
 ## Notes
 
