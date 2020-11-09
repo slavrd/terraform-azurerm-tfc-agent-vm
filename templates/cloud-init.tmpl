@@ -17,5 +17,13 @@ write_files:
   path: /opt/tfca-install/tfca-download.sh
   owner: root:root
   permissions: '755'
+- content: ${tfca_unit_file}
+  encoding: gz+b64
+  path: /etc/systemd/system/tfc-agent.service
+  owner: root:root
+  permissions: '644'
 runcmd:
 - ["/bin/bash", "-c", "TFCA_VERSION='${tfca_version}' /opt/tfca-install/tfca-download.sh"]
+%{ if tfca_service_enable == true ~}
+- ["/bin/bash", "-c", "systemctl enable tfc-agent.service && systemctl start tfc-agent.service"]
+%{ endif ~}

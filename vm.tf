@@ -40,6 +40,12 @@ resource "azurerm_linux_virtual_machine" "tfca" {
 
   custom_data = base64encode(templatefile("${path.module}/templates/cloud-init.tmpl", {
     tfca_version = var.tfca_version
+    tfca_unit_file = base64gzip(templatefile("${path.module}/templates/tfc-agent.service.tmpl", {
+      tfca_user     = var.vm_admin_username
+      tfca_group    = var.vm_admin_username
+      tfca_env_vars = var.tfca_env_vars
+    }))
+    tfca_service_enable = var.tfca_service_enable
   }))
 }
 

@@ -85,3 +85,15 @@ variable "tfca_version" {
   description = "TFC Agent version to install. If not provided will use the latest one."
   default     = ""
 }
+
+variable "tfca_service_enable" {
+  type        = bool
+  description = "Whether to enble the Terraform Cloud Agent as service on the VM."
+  default     = false
+}
+
+variable "tfca_env_vars" {
+  type        = map(string)
+  description = "A map of environment variables to set up in the Terraform Cloud agent systemd unit file."
+  default     = {}
+}

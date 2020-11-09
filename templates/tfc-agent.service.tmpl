@@ -1,0 +1,24 @@
+[Unit]
+Description="Terraform Cloud Agent - a self-hosted worker for Terraform Cloud runs."
+Documentation=https://www.terraform.io/docs/cloud/workspaces/agent.html
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=${tfca_user}
+Group=${tfca_group}
+ProtectSystem=full
+ExecStart=/opt/tfc-agent/tfc-agent
+KillMode=process
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+StartLimitInterval=60
+StartLimitBurst=3
+%{ for k,v in tfca_env_vars ~}
+Environment=${k}=${v}
+%{ endfor ~}
+
+[Install]
+WantedBy=multi-user.target
