@@ -49,7 +49,7 @@ The Terraform configuration declares the following Terraform Outputs:
 | vm_name | `string` | The Name of the VM. |
 | vm_id | `string` | The Id of the VM. |
 
-## Example user
+## Example use
 
 An example of declaration of the module.
 
