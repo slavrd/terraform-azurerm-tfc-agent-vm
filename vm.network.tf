@@ -18,7 +18,7 @@ resource "azurerm_network_interface" "tfca" {
   ip_configuration {
     name                          = "${var.name_prefix}-vm-ip-config"
     primary                       = true
-    subnet_id                     = values(module.network.subnets)[0].id
+    subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.tfca.id
   }

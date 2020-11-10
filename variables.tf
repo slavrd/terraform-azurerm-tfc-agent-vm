@@ -18,20 +18,15 @@ variable "common_tags" {
 
 # Network settings
 
-variable "vnet_cidrs" {
-  type        = list(string)
-  description = "List of CIDRs for the Azure virtual network address spaces."
-}
-
-variable "vnet_subnet_cidrs" {
-  type        = list(string)
-  description = "List of CIDRs for subnets creation. It's the user's responsibility to ensure that the subnets are calculated correctly."
-}
-
 variable "ssh_ingress_cidrs" {
   type        = list(string)
   description = "List of CIDRs from which incoming SSH connections are allowed. If the list is empty the '0.0.0.0/0' will be used."
   default     = ["0.0.0.0/0"]
+}
+
+variable "subnet_id" {
+  type        = string
+  description = "The Id of the subnet in which to place the VM."
 }
 
 # VM settings

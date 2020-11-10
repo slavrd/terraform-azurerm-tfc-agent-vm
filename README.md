@@ -26,8 +26,7 @@ The Terraform configuration accepts the following Terraform Input variables:
 | name_prefix | `string` | `"tfca-"` | Prefix to use in the names of created resources. |
 | location | `string` | | The Azure location in which to create the resources. |
 | common_tags | `map(string)` | `{}` |Common tags to assign to all resources. |
-| vnet_cidrs | `list(string)` | | List of CIDRs for the Azure virtual network address spaces. |
-| vnet_subnet_cidrs | `list(string)` | | List of CIDRs for subnets to be created. It's the user's responsibility to ensure that the subnets are calculated correctly. |
+| subnet_id | `string` | | The Id of the subnet in which to place the VM. |
 | ssh_ingress_cidrs | `list(string)` | `["0.0.0.0/0"]` | List of CIDRs from which incoming SSH connections are allowed. If the list is empty the '0.0.0.0/0' will be used. |
 | vm_size | `string` | `"Standard_D2s_v4"` | The size of the virtual machine. |
 | vm_admin_username | `string` | `"ubuntu"` | The admin user created on the VM. |
@@ -49,6 +48,43 @@ The Terraform configuration declares the following Terraform Outputs:
 | rg_name | `string` | he Name of the resource group containing the VM. |
 | vm_name | `string` | The Name of the VM. |
 | vm_id | `string` | The Id of the VM. |
+
+## Example user
+
+An example of declaration of the module.
+
+```hcl
+module "tfc_agent_vm" {
+  source = "git::https://github.com/slavrd/terraform-azurerm-basic-network.git"
+
+  name_prefix = "tfca-vm-example-"
+  location    = "westeurope"
+  common_tags = {
+    peorject = "tfca-vm-example"
+  }
+
+  subnet_id             = "/subscriptions/xxxxxxxxxx/resourceGroups/xxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxx/subnets/xxxxxx"
+  ssh_ingress_cidrs     = ["0.0.0.0/0"]
+  vm_size               = "Standard_D2s_v4"
+  vm_admin_username     = "ubuntu"
+  vm_ssh_public_key     = ""
+  vm_assigned_role_name = "Contributor"
+  vm_source_image_reference = {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "20.04.202010260"
+  }
+
+  tfca_version        = ""
+  tfca_service_enable = true
+  tfca_env_vars = {
+    TFC_AGENT_TOKEN          = "<TFC_POOL_TOKEN>"
+    TFC_AGENT_LOG_LEVEL      = "TRACE"
+    TFC_AGENT_DISABLE_UPDATE = "TRUE"
+  }
+}
+```
 
 ## Notes
 
