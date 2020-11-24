@@ -37,3 +37,6 @@ Gemfile.lock
 
 # Ignore rbenv local version file
 .ruby-version
+
+# Ignore Kitchen directory
+.kitchen/
