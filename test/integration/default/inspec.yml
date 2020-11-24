@@ -1,0 +1,8 @@
+---
+name: default
+title: Azure VM Terraform Cloud Agent 
+summary: Tests for the Azure VM Terraform Cloud Agent module
+version: 0.1.0
+depends:
+  - name: inspec-azure
+    url: https://github.com/inspec/inspec-azure/archive/v1.35.0.tar.gz
