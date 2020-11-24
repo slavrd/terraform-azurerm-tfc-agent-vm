@@ -13,7 +13,9 @@ crash.log
 # version control.
 #
 *.tfvars
-!example.tfvars
+
+# exclude test variables file
+!test/fixtures/test.tfvars
 
 # Ignore override files as they are usually used to override resources locally and so
 # are not checked in
