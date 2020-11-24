@@ -103,3 +103,57 @@ Alternatively can use the Azure CLI to stop the VM
 ```bash
 az vm stop --ids `terraform output vm_id`
 ```
+## Testing
+
+Tests for the module are set up using `kitchen` and `kitchen-terraform` to run `inspec` tests.
+
+Terraform variables which control the resources created during the test are set up in `test/fixtures/test.tfvars` file.
+
+### Prerequisites
+
+To run the tests you will need the following
+
+* Have Ruby installed, version `~> 2.7.2`. It is recommended to use a ruby versions manager like `rbenv` and not your system ruby installation.
+* Have the Ruby Gems specified in the `Gemfile` file installed. It is recommended to use `bundler`.
+
+  ```bash
+  gem install bundler
+  bundle install
+  ```
+* Have Terraform installed, version `>= 0.13`.
+
+### Running tests
+
+* Set up the credentials for the AzureRM provider as described [here](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs#authenticating-to-azure). For example, using the Azure CLI:
+
+  ```bash
+  az login
+  ```
+
+* Set up Azure credentials for Inspec as described [here](https://docs.chef.io/inspec/platforms/#azure-platform-support-in-inspec). For example, using Service Principal and Client Secret in Environment variables:
+
+  ```bash
+  export AZURE_CLIENT_ID='xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx'
+  export AZURE_CLIENT_SECRET='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+  export AZURE_SUBSCRIPTION_ID='xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx'
+  export AZURE_TENANT_ID='xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx'
+  ```
+* (optional) Adjust Terraform input variables in `test/fixtures/test.tfvars`
+* Use `kitchen` to execute the tests
+  * Converge the testing environment.
+
+  ```bash
+  bundle exec kitchen converge
+  ```
+
+  * Execute the tests.
+
+  ```bash
+  bundle exec kitchen verify
+  ```
+
+  * Destroy the testing environment.
+
+  ```bash
+  bundle exec kitchen destroy
+  ```

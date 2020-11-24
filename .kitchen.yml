@@ -1,0 +1,40 @@
+driver:
+  name: terraform
+  root_module_directory: test/fixtures
+  variable_files:
+    - test/fixtures/test.tfvars
+  variables:
+    tfca_version: "0.1.4"
+    vm_assigned_role_name: "Reader"
+    tfca_env_vars: "{TFC_AGENT_TOKEN = \\\"testTokenString\\\", TFC_AGENT_LOG_LEVEL = \\\"TRACE\\\"}"
+
+provisioner:
+  name: terraform
+
+verifier:
+  name: terraform
+
+platforms:
+  - name: tfca-vm
+
+suites:
+  - name: default
+    verifier:
+      color: true
+      systems: 
+        - name: local
+          backend: local
+          controls:
+            - localOutput
+        - name: azure
+          backend: azure
+          controls:
+            - azureResources
+        - name: remote
+          backend: ssh
+          hosts_output: vm_public_ip
+          user: ubuntu
+          key_files: 
+            - test/fixtures/ssh.key 
+          controls: 
+            - remoteTFCA
