@@ -55,7 +55,7 @@ An example of declaration of the module.
 
 ```hcl
 module "tfc_agent_vm" {
-  source = "git::https://github.com/slavrd/terraform-azurerm-basic-network.git"
+  source = "git::https://github.com/slavrd/terraform-azurerm-tfc-agent-vm.git"
 
   name_prefix = "tfca-vm-example-"
   location    = "westeurope"
