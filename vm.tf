@@ -8,13 +8,14 @@ resource "tls_private_key" "tfca" {
 }
 
 resource "azurerm_linux_virtual_machine" "tfca" {
-  name                = "${var.name_prefix}tfca-vm"
+  count               = var.tfca_count
+  name                = "${var.name_prefix}tfca-vm-${count.index}"
   resource_group_name = azurerm_resource_group.tfca_vm.name
   location            = azurerm_resource_group.tfca_vm.location
   size                = var.vm_size
   admin_username      = var.vm_admin_username
   network_interface_ids = [
-    azurerm_network_interface.tfca.id,
+    azurerm_network_interface.tfca[count.index].id,
   ]
 
   admin_ssh_key {
@@ -41,16 +42,21 @@ resource "azurerm_linux_virtual_machine" "tfca" {
   custom_data = base64encode(templatefile("${path.module}/templates/cloud-init.tmpl", {
     tfca_version = var.tfca_version
     tfca_unit_file = base64gzip(templatefile("${path.module}/templates/tfc-agent.service.tmpl", {
-      tfca_user     = var.vm_admin_username
-      tfca_group    = var.vm_admin_username
-      tfca_env_vars = var.tfca_env_vars
+      tfca_user  = var.vm_admin_username
+      tfca_group = var.vm_admin_username
+      tfca_env_vars = merge(
+        {
+          "TFC_AGENT_TOKEN" = var.tfca_pool_token
+          "TFC_AGENT_NAME"  = "${var.tfca_name_prefix}${count.index}"
+        },
+      var.tfca_env_vars)
     }))
     tfca_service_enable = var.tfca_service_enable
   }))
 }
 
 resource "azurerm_role_assignment" "tfca" {
-  count = var.vm_assigned_role_name == "" ? 0 : 1
+  count = var.vm_assigned_role_name == "" ? 0 : var.tfca_count
   scope = data.azurerm_subscription.current.id
 
   # as per documentation needs to be the "The Scoped-ID" of the Role Definition.
@@ -58,5 +64,5 @@ resource "azurerm_role_assignment" "tfca" {
   # but will then generate diffs on subsequent plans as the resource atrribute is actually set as "Scoped".
   role_definition_id = "${data.azurerm_subscription.current.id}${data.azurerm_role_definition.tfca[0].id}"
 
-  principal_id = azurerm_linux_virtual_machine.tfca.identity[0].principal_id
+  principal_id = azurerm_linux_virtual_machine.tfca[count.index].identity[0].principal_id
 }

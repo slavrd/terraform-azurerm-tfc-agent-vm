@@ -1,7 +1,8 @@
 resource "azurerm_public_ip" "tfca" {
+  count = var.tfca_count
 
   # cannot use the name prefix because of specific restrictions
-  name = "tfcaVMPublicIP"
+  name = "tfcaVMPublicIP${count.index}"
 
   resource_group_name = azurerm_resource_group.tfca_vm.name
   location            = azurerm_resource_group.tfca_vm.location
@@ -11,16 +12,17 @@ resource "azurerm_public_ip" "tfca" {
 }
 
 resource "azurerm_network_interface" "tfca" {
-  name                = "${var.name_prefix}-vm-interface"
+  count               = var.tfca_count
+  name                = "${var.name_prefix}vm-interface-${count.index}"
   resource_group_name = azurerm_resource_group.tfca_vm.name
   location            = azurerm_resource_group.tfca_vm.location
 
   ip_configuration {
-    name                          = "${var.name_prefix}-vm-ip-config"
+    name                          = "${var.name_prefix}vm-ip-config-${count.index}"
     primary                       = true
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.tfca.id
+    public_ip_address_id          = azurerm_public_ip.tfca[count.index].id
   }
 
   tags = var.common_tags
@@ -50,6 +52,7 @@ resource "azurerm_network_security_group" "tfca" {
 }
 
 resource "azurerm_network_interface_security_group_association" "tfca" {
-  network_interface_id      = azurerm_network_interface.tfca.id
+  count                     = var.tfca_count
+  network_interface_id      = azurerm_network_interface.tfca[count.index].id
   network_security_group_id = azurerm_network_security_group.tfca.id
 }
