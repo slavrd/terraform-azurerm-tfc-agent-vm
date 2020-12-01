@@ -13,8 +13,11 @@ module "tfc_agent_vm" {
   vm_assigned_role_name     = var.vm_assigned_role_name
   vm_source_image_reference = var.vm_source_image_reference
 
+  tfca_count          = var.tfca_count
   tfca_version        = var.tfca_version
   tfca_service_enable = var.tfca_service_enable
+  tfca_pool_token     = var.tfca_pool_token
+  tfca_name_prefix    = var.tfca_name_prefix
   tfca_env_vars       = var.tfca_env_vars
 }
 

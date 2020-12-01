@@ -6,7 +6,10 @@ driver:
   variables:
     tfca_version: "0.1.4"
     vm_assigned_role_name: "Reader"
-    tfca_env_vars: "{TFC_AGENT_TOKEN = \\\"testTokenString\\\", TFC_AGENT_LOG_LEVEL = \\\"TRACE\\\"}"
+    tfca_count: "2"
+    tfca_pool_token: "testPoolToken"
+    tfca_name_prefix: "test-agent-name-perfix-"
+    tfca_env_vars: "{ TFC_AGENT_LOG_LEVEL = \\\"TRACE\\\"}"
 
 provisioner:
   name: terraform
@@ -32,7 +35,7 @@ suites:
             - azureResources
         - name: remote
           backend: ssh
-          hosts_output: vm_public_ip
+          hosts_output: vm_public_ip_list
           user: ubuntu
           key_files: 
             - test/fixtures/ssh.key 

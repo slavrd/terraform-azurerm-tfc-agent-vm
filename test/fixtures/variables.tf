@@ -77,6 +77,12 @@ variable "vm_assigned_role_name" {
 
 # TFC Agent settings
 
+variable "tfca_count" {
+  type        = number
+  description = "The number of Azure VM isntances running a TFC Agent to create. Must be greater than 0."
+  default     = 1
+}
+
 variable "tfca_version" {
   type        = string
   description = "TFC Agent version to install. If not provided will use the latest one."
@@ -87,6 +93,17 @@ variable "tfca_service_enable" {
   type        = bool
   description = "Whether to enable the Terraform Cloud Agent as service on the VM."
   default     = false
+}
+
+variable "tfca_pool_token" {
+  type        = string
+  description = "Pool token to configure for the Terraform Cloud Agents."
+}
+
+variable "tfca_name_prefix" {
+  type        = string
+  description = "A name prefix to use for the Terraform Cloud Agent names."
+  default     = "tfca-"
 }
 
 variable "tfca_env_vars" {
