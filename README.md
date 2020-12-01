@@ -33,9 +33,12 @@ The Terraform configuration accepts the following Terraform Input variables:
 | vm_ssh_public_key | `string` | `""` |An SSH public key to install on the VM. If not provided a new SSH key pair will be generated and used. |
 | vm_source_image_reference | `object({ publisher=string, offer=string, sku=string, version=string })` | `{publisher="Canonical", offer="0001-com-ubuntu-server-focal", sku="20_04-lts", version="20.04.202010260" }` | Source reference to the Azure VM image to use. Should be an Ubuntu OS image.If not provided an Ubuntu 20.04 image will be used. |
 | vm_assigned_role_name | `string` | `""` | The name of the role definition to assign to the VM. If not provided no roles will be assigned. Assignment will be scoped to the current subscription. |
+| tfca_count | `number` | `1` | The number of Azure VM instances running a TFC Agent to create. Must be greater than 0. |
 | tfca_version | `string` | `""` | TFC Agent version to install. If not provided will use the latest one. |
 | tfca_service_enable | `bool` | `false` | Whether to enable the Terraform Cloud Agent as service on the VM. |
-| tfca_env_vars | `map(string)` | `{}` | A map of environment variables to set up in the Terraform Cloud agent systemd unit file. |
+| tfca_pool_token | `string` | | Pool token to configure for the Terraform Cloud Agents. |
+| tfca_name_prefix | `string` | `tfca-` | A name prefix to use for the Terraform Cloud Agent names. |
+| tfca_env_vars | `map(string)` | `{}` | A map of environment variables to set up in the Terraform Cloud agent systemd unit file. It must not contain 'TFC_AGENT_TOKEN' or 'TFC_AGENT_NAME' variables. |
 
 ## Output
 
@@ -43,11 +46,11 @@ The Terraform configuration declares the following Terraform Outputs:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| vm_public_ip | `string` | The public IP of VM. |
+| vm_public_ip | `map(string)` | A mapping of the Azure public IPs assigned to the VMs and their values. |
 | ssh_private_key | `string` | The private key to access the VM. Populated only if the key was created via Terraform. |
 | rg_name | `string` | The Name of the resource group containing the VM. |
-| vm_name | `string` | The Name of the VM. |
-| vm_id | `string` | The Id of the VM. |
+| vm_name | `list(string)` | The Name of the VM. |
+| vm_id | `list(string)` | The Ids of the VMs. |
 
 ## Example use
 
@@ -78,8 +81,9 @@ module "tfc_agent_vm" {
 
   tfca_version        = ""
   tfca_service_enable = true
+  tfca_pool_token     = "<TFC_POOL_TOKEN>"
+  tfca_name_prefix    = "tfca-"
   tfca_env_vars = {
-    TFC_AGENT_TOKEN          = "<TFC_POOL_TOKEN>"
     TFC_AGENT_LOG_LEVEL      = "TRACE"
     TFC_AGENT_DISABLE_UPDATE = "TRUE"
   }
