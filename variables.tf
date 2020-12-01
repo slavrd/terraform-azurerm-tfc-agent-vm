@@ -75,7 +75,7 @@ variable "vm_assigned_role_name" {
 
 variable "tfca_count" {
   type        = number
-  description = "The number of Azure VM isntances running a TFC Agent to create. Must be greater than 0."
+  description = "The number of Azure VM instances running a TFC Agent to create. Must be greater than 0."
   default     = 1
   validation {
     condition     = var.tfca_count > 0

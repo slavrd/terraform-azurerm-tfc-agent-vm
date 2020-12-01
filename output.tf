@@ -1,5 +1,5 @@
 output "vm_public_ip" {
-  description = "The public IPs of VMs."
+  description = "A mapping of the Azure public IPs assigned to the VMs and their values."
   value       = { for data in data.azurerm_public_ip.tfca[*] : data.name => data.ip_address }
 }
 
