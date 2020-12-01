@@ -3,6 +3,11 @@ output "vm_public_ip" {
   value       = module.tfc_agent_vm.vm_public_ip
 }
 
+output "vm_public_ip_list" {
+  description = "The public IP of VM."
+  value       = values(module.tfc_agent_vm.vm_public_ip)
+}
+
 output "rg_name" {
   description = "The Name of the resource group containing the VM."
   value       = module.tfc_agent_vm.rg_name

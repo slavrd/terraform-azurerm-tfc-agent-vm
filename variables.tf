@@ -73,6 +73,16 @@ variable "vm_assigned_role_name" {
 
 # TFC Agent settings
 
+variable "tfca_count" {
+  type        = number
+  description = "The number of Azure VM instances running a TFC Agent to create. Must be greater than 0."
+  default     = 1
+  validation {
+    condition     = var.tfca_count > 0
+    error_message = "The value for 'tfca_count' must be graeter than 0."
+  }
+}
+
 variable "tfca_version" {
   type        = string
   description = "TFC Agent version to install. If not provided will use the latest one."
@@ -85,8 +95,23 @@ variable "tfca_service_enable" {
   default     = false
 }
 
+variable "tfca_pool_token" {
+  type        = string
+  description = "Pool token to configure for the Terraform Cloud Agents."
+}
+
+variable "tfca_name_prefix" {
+  type        = string
+  description = "A name prefix to use for the Terraform Cloud Agent names."
+  default     = "tfca-"
+}
+
 variable "tfca_env_vars" {
   type        = map(string)
-  description = "A map of environment variables to set up in the Terraform Cloud agent systemd unit file."
+  description = "A map of environment variables to set up in the Terraform Cloud agent systemd unit file. It must not contain 'TFC_AGENT_TOKEN' or 'TFC_AGENT_NAME' variables."
   default     = {}
+  validation {
+    condition     = ! (contains(keys(var.tfca_env_vars), "TFC_AGENT_TOKEN") || contains(keys(var.tfca_env_vars), "TFC_AGENT_NAME"))
+    error_message = "The map for tfca_env_vars must not contain keys 'TFC_AGENT_TOKEN' or 'TFC_AGENT_NAME'."
+  }
 }

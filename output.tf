@@ -1,6 +1,6 @@
 output "vm_public_ip" {
-  description = "The public IP of VM."
-  value       = data.azurerm_public_ip.tfca.ip_address
+  description = "A mapping of the Azure public IPs assigned to the VMs and their values."
+  value       = { for data in data.azurerm_public_ip.tfca[*] : data.name => data.ip_address }
 }
 
 output "ssh_private_key" {
@@ -14,11 +14,11 @@ output "rg_name" {
 }
 
 output "vm_name" {
-  description = "The Name of the VM."
-  value       = azurerm_linux_virtual_machine.tfca.name
+  description = "The names of the VMs."
+  value       = azurerm_linux_virtual_machine.tfca[*].name
 }
 
 output "vm_id" {
-  description = "The Id of the VM."
-  value       = azurerm_linux_virtual_machine.tfca.id
+  description = "The Ids of the VMs."
+  value       = azurerm_linux_virtual_machine.tfca[*].id
 }
