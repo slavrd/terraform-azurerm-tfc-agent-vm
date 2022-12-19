@@ -53,6 +53,12 @@ resource "azurerm_linux_virtual_machine" "tfca" {
     }))
     tfca_service_enable = var.tfca_service_enable
   }))
+  
+  lifecycle {
+    ignore_changes = [
+      size,
+    ]
+  }
 }
 
 resource "azurerm_role_assignment" "tfca" {
